@@ -41,13 +41,8 @@ namespace Task2
         }
 
 
-        public string FileName
-        {
-            get // this code is executed when the value of a property is read
-            {
-                return fileName;
-            }
-        }
+        public string FileName => fileName;
+
 
         public string FilePermission
         {
