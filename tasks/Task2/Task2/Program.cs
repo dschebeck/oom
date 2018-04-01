@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +48,17 @@ namespace Task2
             FileExtension = "PDF";
             filePermission = "";
         }
+
+
+        //{"FileExtension":"PDF","FileName":"Document","FilePermission":"NOTSET","FileSize":0}
+
+        [JsonConstructor]
+        public PDF(string filename, int filesize, string filepermission) :this(filename)
+        {
+            this.FileSize = filesize;
+            this.UpdateFilePermission(filepermission, "UltraSecretPassword");
+        }
+
 
 
         // public property
@@ -245,17 +258,52 @@ namespace Task2
             //TASK2
 
             Console.WriteLine("---------------------");
-           //TASK3
+            //TASK3
 
-           Filedata[] directory = new Filedata[] { new Audio("Mozart"), new PDF("Document"), new Audio("Sounds"), new PDF("PrjDescr") };
+            Filedata[] directory = new Filedata[] { new Audio("Mozart"), new PDF("Document"), new Audio("Sounds"), new PDF("PrjDescr") };
 
             foreach (Filedata element in directory)
             {
                 Console.WriteLine($"Current File:  {element.FileName}.{element.FileExtension} ");
             }
-
-
             //TASK3
+
+            Console.WriteLine("---------------------");
+            //TASK4
+
+            var directory2 = new PDF[] { new PDF("Document"), new PDF("PrjDescr") };
+
+            directory2[1].FileSize = 50;
+            directory2[1].UpdateFilePermission("RWX------", "UltraSecretPassword");
+
+
+
+            Console.WriteLine("---Serialize Object to JSON String");
+            string json = JsonConvert.SerializeObject(directory2);
+            Console.WriteLine("---Print JSON Variable");
+            Console.WriteLine(json);
+
+            Console.WriteLine("---Write JSON Variable to C:\\PDF.json");
+            File.WriteAllText(@"PDF.json", json);
+            string content = File.ReadAllText(@"PDF.json");
+
+            Console.WriteLine("---Print Content from PDF.json");
+            Console.WriteLine(content);
+
+            Console.WriteLine("---Deserialize Object from JSON File");
+            PDF[] directory3 = JsonConvert.DeserializeObject<PDF[]>(content);
+
+            Console.WriteLine("---Printt Deserialize JSON");
+
+            foreach (PDF element in directory3)
+            { 
+                Console.WriteLine($"Filename: {element.FileName}.{element.FileExtension}  Size:{element.FileSize} Permission:{element.FilePermission}");
+            }
+
+
+            //TASK4
+
+
         }
     }
 }
