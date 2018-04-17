@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Net;
 
 namespace Task2
 {
@@ -332,7 +333,13 @@ namespace Task2
             }
 
             //-----------T6.2
-            
+
+            // Task<string> futureData = new WebClient().DownloadStringAsync(url);
+            // futureData.ContinueWith(t => Console.WriteLine(t.Result));
+
+
+            //string data = await new WebClient().DownloadStringAsync(url);
+            //Console.WriteLine(data);
 
             //TASK6
 
