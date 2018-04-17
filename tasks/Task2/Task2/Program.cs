@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Task2
 {
@@ -13,7 +15,7 @@ namespace Task2
     {
         int UpdateFilePermission(string newFilePermission, string secret);
         int AppendDate(int data);
-
+        
         string FileName
         {
             get;
@@ -232,9 +234,6 @@ namespace Task2
     }
 
 
-
-
-
     class Program
     {
         static void Main(string[] args)
@@ -302,6 +301,40 @@ namespace Task2
 
 
             //TASK4
+
+            Console.WriteLine("---------------------");
+            //TASK6
+            var producer = new Subject<PDF>();
+
+            producer
+                .Subscribe(x => Console.WriteLine($"received New File :{x.FileName}.{x.FileExtension} size: {x.FileSize}"));
+
+            producer
+                .Where(x => x.FileSize < 30)
+                .Subscribe(x => Console.WriteLine($"Small File"));
+            producer
+                .Where(x => x.FileSize >= 30)
+                .Where(x => x.FileSize < 70)
+                .Subscribe(x => Console.WriteLine($"Medium File"));
+
+            producer
+                .Where(x => x.FileSize >= 70)
+                .Subscribe(x => Console.WriteLine($"Big File"));
+
+            Random rnd = new Random();
+            for (var i = 0; i < 10; i++)
+            {
+                System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(100));
+
+                //if(rnd.Next(1, 100)%2 != 0)
+                producer.OnNext(new PDF("PDF Nr." + i, rnd.Next(1, 100), "RWX------")); // push value i to subscribers
+
+            }
+
+            //-----------T6.2
+            
+
+            //TASK6
 
 
         }
